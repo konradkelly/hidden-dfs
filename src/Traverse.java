@@ -29,7 +29,7 @@ public class Traverse {
     eve.getConfidants().addAll(Arrays.asList(frank, irene));
     frank.getConfidants().addAll(Arrays.asList(bob, grace));
     grace.getConfidants().add(henry);
-    henry.getConfidants().addAll(Arrays.asList(alice, diana));
+    henry.getConfidants().addAll(Arrays.asList());
     irene.getConfidants().addAll(Arrays.asList(jack, diana));
     jack.getConfidants().addAll(Arrays.asList(charlie, bob));
 
@@ -69,5 +69,44 @@ public class Traverse {
     v45.neighbors = new ArrayList<>(List.of(v23));
     v23.neighbors = new ArrayList<>(List.of());
     v67.neighbors = new ArrayList<>(List.of(v91));
+
+    printGossipers(grace);
+  }
+
+  public static boolean reachable(Map<Integer, Set<Integer>> graph, int start, int end) {
+    if (graph.get(start).contains(end)) return true;
+    return reachable(graph, start, end, new HashSet<>());
+  }
+
+  private static boolean reachable(Map<Integer, Set<Integer>> graph, int start, int end, Set<Integer> seen) {
+   if (start == end) return false;
+   if (seen.contains(start)) return false;
+
+   seen.add(start);
+
+    for (int neighbor : graph.get(start)) {
+      reachable(graph, neighbor, end, seen);
+      return true;
+    }
+  
+  return false;
+
+}
+
+  public static void printGossipers(Person current) {
+    Set<Person> seen = new HashSet<>();
+    printGossipers(current, seen);
+  }
+
+  private static void printGossipers(Person current, Set<Person> seen) {
+    if (seen.contains(current)) return;
+
+    seen.add(current);
+
+    System.out.println(current.getName());
+
+    for (Person confidant : current.getConfidants()) {
+      printGossipers(confidant, seen);
+    }
   }
 }
